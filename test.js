@@ -15,7 +15,8 @@ describe('WeakRefMap', () => {
   it('can be created from an existing iterable', () => {
     const iterableSeed = [
       ['foo', { qoo: 1 }],
-      ['bar', { qar: 2 }]
+      ['bar', { qar: 2 }],
+      ['box', 'boop']
     ]
     weakRefMap = new WeakRefMap(iterableSeed)
     regularMap = new Map(iterableSeed)
@@ -27,6 +28,33 @@ describe('WeakRefMap', () => {
     regularMap.set('baz', { qux: 3 })
     assert(normalizeMap(weakRefMap) === normalizeMap(regularMap))
   })
+
+  it('can set an existing key', () => {
+    weakRefMap.set('bar', 'bark')
+    regularMap.set('bar', 'bark')
+    assert(normalizeMap(weakRefMap) === normalizeMap(regularMap))
+  })
+
+  it('can set an existing non-object value', () => {
+    weakRefMap.set('bar', 'bonk')
+    regularMap.set('bar', 'bonk')
+    assert(normalizeMap(weakRefMap) === normalizeMap(regularMap))
+  })
+
+  if('can set a value to undefined', () => {
+    weakRefMap.set('beep', undefined)
+    regularMap.set('beep', undefined)
+    assert(weakRefMap.has('beep'))
+    assert(weakRefMap.has('beep') === regularMap.has('beep'))
+    let weakRefDeleteReturn = weakRefMap.delete('beep')
+    let regularDeleteReturn = regularMap.delete('beep')
+    assert(weakRefDeleteReturn)
+    assert(weakRefDeleteReturn === regularDeleteReturn)
+    weakRefDeleteReturn = weakRefMap.delete('beep')
+    regularDeleteReturn = regularMap.delete('beep')
+    assert(weakRefDeleteReturn === false)
+    assert(weakRefDeleteReturn === regularDeleteReturn)
+  });
 
   it('can have a value gotten', () => {
     const weakRefResult = weakRefMap.get('foo')
@@ -55,7 +83,7 @@ describe('WeakRefMap', () => {
   it('can delete a value', () => {
     weakRefMap.delete('foo')
     regularMap.delete('foo')
-    assert(normalizeMap(weakRefMap) === '[["bar",{"qar":2}],["baz",{"qux":3}]]')
+    assert(normalizeMap(weakRefMap) === '[["bar","bonk"],["box","boop"],["baz",{"qux":3}]]')
     assert(normalizeMap(weakRefMap) === normalizeMap(regularMap))
   })
 
@@ -66,10 +94,22 @@ describe('WeakRefMap', () => {
     assert(normalizeMap(weakRefMap) === normalizeMap(regularMap))
   })
 
+  it('can set a value to a WeakRef', () => {
+    const dummyWeakRef = new WeakRef({})
+    weakRefMap.set('weakRef', dummyWeakRef)
+    regularMap.set('weakRef', dummyWeakRef)
+    const weakRefResult = weakRefMap.get('weakRef');
+    const regularResult = regularMap.get('weakRef');
+    assert(weakRefResult instanceof WeakRef)
+    assert(weakRefResult === regularResult)
+  });
+
   it('can be iterated over', () => {
     const seedData = [
       ['foo', { qoo: 1 }],
-      ['bar', { qar: 2 }]
+      ['bar', { qar: 2 }],
+      ['boop', 'beep'],
+      ['oops', undefined]
     ]
     let weakRefResult = ''
     let regularResult = ''
@@ -81,7 +121,7 @@ describe('WeakRefMap', () => {
     for (const [key, value] of regularMap) {
       regularResult += JSON.stringify([key, value])
     }
-    assert(weakRefResult === '["foo",{"qoo":1}]["bar",{"qar":2}]')
+    assert(weakRefResult === '["foo",{"qoo":1}]["bar",{"qar":2}]["boop","beep"]["oops",null]')
     assert(weakRefResult === regularResult)
   })
 
@@ -94,7 +134,7 @@ describe('WeakRefMap', () => {
     regularMap.forEach((value, key) => {
       regularResult += JSON.stringify([key, value])
     })
-    assert(weakRefResult === '["foo",{"qoo":1}]["bar",{"qar":2}]')
+    assert(weakRefResult === '["foo",{"qoo":1}]["bar",{"qar":2}]["boop","beep"]["oops",null]')
     assert(weakRefResult === regularResult)
   })
 
@@ -107,7 +147,7 @@ describe('WeakRefMap', () => {
     for (const [key, value] of regularMap) {
       regularResult += JSON.stringify([key, value])
     }
-    assert(weakRefResult === '["foo",{"qoo":1}]["bar",{"qar":2}]')
+    assert(weakRefResult === '["foo",{"qoo":1}]["bar",{"qar":2}]["boop","beep"]["oops",null]')
     assert(weakRefResult === regularResult)
   })
 
@@ -120,7 +160,7 @@ describe('WeakRefMap', () => {
     for (const key of regularMap.keys()) {
       regularResult += JSON.stringify(key)
     }
-    assert(weakRefResult === '"foo""bar"')
+    assert(weakRefResult === '"foo""bar""boop""oops"')
     assert(weakRefResult === regularResult)
   })
 
@@ -133,9 +173,10 @@ describe('WeakRefMap', () => {
     for (const value of regularMap.values()) {
       regularResult += JSON.stringify(value)
     }
-    assert(weakRefResult === '{"qoo":1}{"qar":2}')
+    assert(weakRefResult === '{"qoo":1}{"qar":2}"beep"undefined')
     assert(weakRefResult === regularResult)
   })
+
 })
 
 describe('WeakRefSet', () => {

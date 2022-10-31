@@ -4,7 +4,9 @@
   "description": "Iterable WeakMaps and WeakSets. Provides WeakRefMap and WeakRefSet which store values using WeakRefs and clean themselves up when garbage collected.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "standard --fix",
+    "prepack": "npm run lint && npm test"
   },
   "author": "Li Hongyi",
   "license": "MIT",

@@ -190,7 +190,7 @@ describe('WeakRefSet', () => {
   })
 
   it('can be created with iterable', () => {
-    const seedData = [{ foo: 1 }, { bar: 2 }, { baz: 3 }]
+    const seedData = [{ foo: 1 }, { bar: 2 }, { baz: 3 }, 'boop']
     weakRefSet = new WeakRefSet(seedData)
     regularSet = new Set(seedData)
     assert(normalizeSet(weakRefSet) === normalizeSet(regularSet))
@@ -199,7 +199,7 @@ describe('WeakRefSet', () => {
   it('can have a value added', () => {
     weakRefSet.add({ qaz: 4 })
     regularSet.add({ qaz: 4 })
-    assert(normalizeSet(weakRefSet) === '[{"foo":1},{"bar":2},{"baz":3},{"qaz":4}]')
+    assert(normalizeSet(weakRefSet) === '[{"foo":1},{"bar":2},{"baz":3},"boop",{"qaz":4}]')
     assert(normalizeSet(weakRefSet) === normalizeSet(regularSet))
   })
 
@@ -209,7 +209,7 @@ describe('WeakRefSet', () => {
     weakRefSet.add(newElement)
     regularSet.add(newElement)
     regularSet.add(newElement)
-    assert(normalizeSet(weakRefSet) === '[{"foo":1},{"bar":2},{"baz":3},{"qaz":4},{"qux":5}]')
+    assert(normalizeSet(weakRefSet) === '[{"foo":1},{"bar":2},{"baz":3},"boop",{"qaz":4},{"qux":5}]')
     assert(normalizeSet(weakRefSet) === normalizeSet(regularSet))
   })
 
@@ -224,7 +224,7 @@ describe('WeakRefSet', () => {
   it('can delete an element', () => {
     let weakDidDelete = weakRefSet.delete(newElement)
     let regularDidDelete = regularSet.delete(newElement)
-    assert(normalizeSet(weakRefSet) === '[{"foo":1},{"bar":2},{"baz":3},{"qaz":4}]')
+    assert(normalizeSet(weakRefSet) === '[{"foo":1},{"bar":2},{"baz":3},"boop",{"qaz":4}]')
     assert(normalizeSet(weakRefSet) === normalizeSet(regularSet))
     assert(weakDidDelete === true)
     weakDidDelete = weakRefSet.delete(newElement)
@@ -240,8 +240,19 @@ describe('WeakRefSet', () => {
     assert(normalizeSet(weakRefSet) === normalizeSet(regularSet))
   })
 
+  it('can add undefined', () => {
+    assert(weakRefSet.has(undefined) === false)
+    assert(regularSet.has(undefined) === false)
+    weakRefSet.add(undefined)
+    regularSet.add(undefined)
+    assert(normalizeSet(weakRefSet) === '[null]')
+    assert(normalizeSet(weakRefSet) === normalizeSet(regularSet))
+    assert(weakRefSet.has(undefined) === true)
+    assert(regularSet.has(undefined) === true)
+  })
+
   it('can forEach', () => {
-    const seedData = [{ foo: 1 }, { bar: 2 }, { baz: 3 }]
+    const seedData = [{ foo: 1 }, { bar: 2 }, { baz: 3 }, "boop", "undefined"]
     weakRefSet = new WeakRefSet(seedData)
     regularSet = new Set(seedData)
     let weakRefResult = ''
@@ -254,7 +265,7 @@ describe('WeakRefSet', () => {
       regularResult += (JSON.stringify(value) + JSON.stringify(key))
       assert(set === regularSet)
     })
-    assert(weakRefResult === '{"foo":1}{"foo":1}{"bar":2}{"bar":2}{"baz":3}{"baz":3}')
+    assert(weakRefResult === '{"foo":1}{"foo":1}{"bar":2}{"bar":2}{"baz":3}{"baz":3}"boop""boop""undefined""undefined"')
     assert(weakRefResult === regularResult)
   })
 
@@ -267,7 +278,7 @@ describe('WeakRefSet', () => {
     for (const value of regularSet) {
       regularResult += JSON.stringify(value)
     }
-    assert(weakRefResult === '{"foo":1}{"bar":2}{"baz":3}')
+    assert(weakRefResult === '{"foo":1}{"bar":2}{"baz":3}"boop""undefined"')
     assert(weakRefResult === regularResult)
   })
 
@@ -280,7 +291,7 @@ describe('WeakRefSet', () => {
     for (const value of regularSet.entries()) {
       regularResult += JSON.stringify(value)
     }
-    assert(weakRefResult === '[{"foo":1},{"foo":1}][{"bar":2},{"bar":2}][{"baz":3},{"baz":3}]')
+    assert(weakRefResult === '[{"foo":1},{"foo":1}][{"bar":2},{"bar":2}][{"baz":3},{"baz":3}]["boop","boop"]["undefined","undefined"]')
     assert(weakRefResult === regularResult)
   })
 
@@ -293,7 +304,7 @@ describe('WeakRefSet', () => {
     for (const value of regularSet.keys()) {
       regularResult += JSON.stringify(value)
     }
-    assert(weakRefResult === '{"foo":1}{"bar":2}{"baz":3}')
+    assert(weakRefResult === '{"foo":1}{"bar":2}{"baz":3}"boop""undefined"')
     assert(weakRefResult === regularResult)
   })
 
@@ -306,7 +317,7 @@ describe('WeakRefSet', () => {
     for (const value of regularSet.values()) {
       regularResult += JSON.stringify(value)
     }
-    assert(weakRefResult === '{"foo":1}{"bar":2}{"baz":3}')
+    assert(weakRefResult === '{"foo":1}{"bar":2}{"baz":3}"boop""undefined"')
     assert(weakRefResult === regularResult)
   })
 })

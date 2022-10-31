@@ -137,6 +137,8 @@ class WeakRefSet extends Set {
   #membership = new WeakMap()
 
   // Delete the corresponding ref when object is collected
+  // No need to remove from membership because it would already be gone from there
+  // By the time we hit finalization
   #registry = new FinalizationRegistry(ref => {
     super.delete(ref)
   })
@@ -145,10 +147,8 @@ class WeakRefSet extends Set {
   // so that we generate weakrefs
   constructor (iterable) {
     super()
-    if (iterable) {
-      for (const value of iterable) {
-        this.add(value)
-      }
+    if (iterable) for (const value of iterable) {
+      this.add(value)
     }
   }
 
@@ -159,30 +159,49 @@ class WeakRefSet extends Set {
     // Otherwise mark the membership
     // mark for clean up
     // and store the reference
-    const ref = new WeakRef(value)
-    this.#membership.set(value, ref)
-    this.#registry.register(value, ref, ref)
-    return super.add(ref)
+    if (typeof value === 'object' && value !== null) {
+      const ref = new WeakRef(value)
+      this.#membership.set(value, ref)
+      this.#registry.register(value, ref, ref)
+      return super.add(ref)
+    }
+    // For primitives then just process it normally
+    else {
+      return super.add(value)
+    }
   }
 
   has (value) {
-    const ref = this.#membership.get(value)
-    if (typeof ref === 'undefined') return false
-    if (typeof ref.deref() === 'undefined') return false
-    return true
+    // If its an object then check the refs
+    if (typeof value === 'object' && value !== null) {
+      const ref = this.#membership.get(value)
+      if (typeof ref === 'undefined') return false
+      if (typeof ref.deref() === 'undefined') return false
+      return true
+    }
+    // If it's a primitive then do a normal has check
+    else {
+      return super.has(value)
+    }
+
   }
 
   delete (value) {
-    const ref = this.#membership.get(value)
-    // Early return if nothing defined
-    if (typeof ref === 'undefined') return false
-    // Otherwise an entry was found
-    this.#membership.delete(value)
-    this.#registry.unregister(ref)
-    super.delete(ref)
-    // Only return a successful delete if ref was still live
-    if (typeof ref.deref() === 'undefined') return false
-    return true
+    if (typeof value === 'object' && value !== null) {
+      const ref = this.#membership.get(value)
+      // Early return if nothing defined
+      if (typeof ref === 'undefined') return false
+      // Otherwise an entry was found
+      this.#membership.delete(value)
+      this.#registry.unregister(ref)
+      super.delete(ref)
+      // Only return a successful delete if ref was still live
+      if (typeof ref.deref() === 'undefined') return false
+      return true
+    }
+    else {
+      return super.delete(value)
+    }
   }
 
   clear () {
@@ -204,9 +223,12 @@ class WeakRefSet extends Set {
   // Default iterator
   // Iterates but only yields live references
   * [Symbol.iterator] () {
-    for (const ref of super[Symbol.iterator]()) {
-      const value = ref.deref()
-      if (typeof value !== 'undefined') yield value
+    for (let value of super[Symbol.iterator]()) {
+      if (value instanceof WeakRef) {
+        value = value.deref()
+        if (typeof value !== 'undefined') yield value
+      }
+      else { yield value }
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "weak-ref-collections",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Iterable WeakMaps and WeakSets. Provides WeakRefMap and WeakRefSet which store values using WeakRefs and clean themselves up when garbage collected.",
   "main": "index.js",
   "scripts": {
@@ -15,15 +15,18 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fynyky/com.docker.devenvironments.code.git"
+    "url": "git+https://github.com/fynyky/weak-ref-collections.git"
   },
   "keywords": [
-    "weakmap",
     "weakref",
-    "weak"
+    "weakmap",
+    "weakset",
+    "weak",
+    "iterable",
+    "enumerable"
   ],
   "bugs": {
-    "url": "https://github.com/fynyky/com.docker.devenvironments.code/issues"
+    "url": "https://github.com/fynyky/weak-ref-collections/issues"
   },
-  "homepage": "https://github.com/fynyky/com.docker.devenvironments.code#readme"
+  "homepage": "https://github.com/fynyky/weak-ref-collections#readme"
 }

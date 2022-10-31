@@ -41,7 +41,7 @@ describe('WeakRefMap', () => {
     assert(normalizeMap(weakRefMap) === normalizeMap(regularMap))
   })
 
-  if('can set a value to undefined', () => {
+  it('can set a value to undefined', () => {
     weakRefMap.set('beep', undefined)
     regularMap.set('beep', undefined)
     assert(weakRefMap.has('beep'))
@@ -54,7 +54,7 @@ describe('WeakRefMap', () => {
     regularDeleteReturn = regularMap.delete('beep')
     assert(weakRefDeleteReturn === false)
     assert(weakRefDeleteReturn === regularDeleteReturn)
-  });
+  })
 
   it('can have a value gotten', () => {
     const weakRefResult = weakRefMap.get('foo')
@@ -98,11 +98,11 @@ describe('WeakRefMap', () => {
     const dummyWeakRef = new WeakRef({})
     weakRefMap.set('weakRef', dummyWeakRef)
     regularMap.set('weakRef', dummyWeakRef)
-    const weakRefResult = weakRefMap.get('weakRef');
-    const regularResult = regularMap.get('weakRef');
+    const weakRefResult = weakRefMap.get('weakRef')
+    const regularResult = regularMap.get('weakRef')
     assert(weakRefResult instanceof WeakRef)
     assert(weakRefResult === regularResult)
-  });
+  })
 
   it('can be iterated over', () => {
     const seedData = [
@@ -176,7 +176,6 @@ describe('WeakRefMap', () => {
     assert(weakRefResult === '{"qoo":1}{"qar":2}"beep"undefined')
     assert(weakRefResult === regularResult)
   })
-
 })
 
 describe('WeakRefSet', () => {
@@ -252,7 +251,7 @@ describe('WeakRefSet', () => {
   })
 
   it('can forEach', () => {
-    const seedData = [{ foo: 1 }, { bar: 2 }, { baz: 3 }, "boop", "undefined"]
+    const seedData = [{ foo: 1 }, { bar: 2 }, { baz: 3 }, 'boop', 'undefined']
     weakRefSet = new WeakRefSet(seedData)
     regularSet = new Set(seedData)
     let weakRefResult = ''

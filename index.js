@@ -36,15 +36,14 @@ class WeakRefMap extends Map {
       const ref = new WeakRef(value)
       this.#registry.register(value, key, ref)
       return super.set(key, ref)
-    }
-    // If its not an object just set it directly 
-    else {
+    // If its not an object just set it directly
+    } else {
       return super.set(key, value)
     }
   }
 
   get (key) {
-    let value = super.get(key);
+    let value = super.get(key)
     // If its a weakRef then unwrap it first
     // No need to check for GCd stuff because its meant to be undefined anyway
     if (value instanceof WeakRef) value = super.get(key)?.deref()
@@ -52,7 +51,7 @@ class WeakRefMap extends Map {
   }
 
   has (key) {
-    let value = super.get(key);
+    let value = super.get(key)
     // If its a weakRef then unwrap it first
     if (value instanceof WeakRef) {
       value = super.get(key)?.deref()
@@ -75,11 +74,10 @@ class WeakRefMap extends Map {
       // Only return a successful delete if ref was still live
       if (typeof value.deref() === 'undefined') return false
       else return true
-    } 
     // Getting here means it is a valid primitive
-    // return the super.delete call to account for 
+    // return the super.delete call to account for
     // edge case of valid undefined value
-    else {
+    } else {
       return super.delete(key)
     }
   }
@@ -138,8 +136,10 @@ class WeakRefSet extends Set {
   // so that we generate weakrefs
   constructor (iterable) {
     super()
-    if (iterable) for (const value of iterable) {
-      this.add(value)
+    if (iterable) {
+      for (const value of iterable) {
+        this.add(value)
+      }
     }
   }
 
@@ -155,9 +155,8 @@ class WeakRefSet extends Set {
       this.#membership.set(value, ref)
       this.#registry.register(value, ref, ref)
       return super.add(ref)
-    }
     // For primitives then just process it normally
-    else {
+    } else {
       return super.add(value)
     }
   }
@@ -169,12 +168,10 @@ class WeakRefSet extends Set {
       if (typeof ref === 'undefined') return false
       if (typeof ref.deref() === 'undefined') return false
       return true
-    }
     // If it's a primitive then do a normal has check
-    else {
+    } else {
       return super.has(value)
     }
-
   }
 
   delete (value) {
@@ -189,8 +186,7 @@ class WeakRefSet extends Set {
       // Only return a successful delete if ref was still live
       if (typeof ref.deref() === 'undefined') return false
       return true
-    }
-    else {
+    } else {
       return super.delete(value)
     }
   }
@@ -218,8 +214,7 @@ class WeakRefSet extends Set {
       if (value instanceof WeakRef) {
         value = value.deref()
         if (typeof value !== 'undefined') yield value
-      }
-      else { yield value }
+      } else { yield value }
     }
   }
 

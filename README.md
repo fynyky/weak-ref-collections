@@ -1,7 +1,7 @@
 # WeakRefMap
 A Map of WeakRefs. Unlike WeakMap which stores keys weakly, this stores keys strongly but stores values using WeakRefs. Is fully iterable. Works just like a normal Map object but holds its values weakly and cleans itself up when its values are garbage collected.
 
-Follows the (Map API)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map]
+Follows the [Map API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
 
 ```javascript
 const { WeakRefMap } = require("weak-ref-map");

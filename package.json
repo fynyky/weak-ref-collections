@@ -1,0 +1,14 @@
+{
+  "name": "weak-ref-map",
+  "version": "1.0.0",
+  "description": "A Map of WeakRefs. Unlike WeakMap which stores keys weakly, this stores keys strongly but stores values using WeakRefs. Is fully iterable. Works just like a normal Map object but holds its values weakly and cleans itself up when its values are garbage collected.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Li Hongyi",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^10.1.0"
+  }
+}

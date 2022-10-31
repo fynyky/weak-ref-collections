@@ -4,7 +4,7 @@ A Map of WeakRefs. Unlike WeakMap which stores keys weakly, this stores keys str
 Follows the [Map API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
 
 ```javascript
-const { WeakRefMap } = require("weak-ref-map");
+const WeakRefMap = require("weak-ref-map");
 
 weakRefMap = new WeakRefMap();
 weakRefMap.set("foo", {"bar": 1});

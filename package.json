@@ -9,6 +9,7 @@
   "author": "Li Hongyi",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "^10.1.0"
+    "mocha": "^10.1.0",
+    "standard": "^17.0.0"
   }
 }

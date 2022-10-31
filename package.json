@@ -11,5 +11,19 @@
   "devDependencies": {
     "mocha": "^10.1.0",
     "standard": "^17.0.0"
-  }
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fynyky/com.docker.devenvironments.code.git"
+  },
+  "keywords": [
+    "weakmap",
+    "weakref",
+    "weak"
+  ],
+  "bugs": {
+    "url": "https://github.com/fynyky/com.docker.devenvironments.code/issues"
+  },
+  "homepage": "https://github.com/fynyky/com.docker.devenvironments.code#readme"
 }

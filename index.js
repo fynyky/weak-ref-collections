@@ -11,11 +11,6 @@ class WeakRefMap extends Map {
     super.delete(key)
   })
 
-  // Use this to keep track of weakref wrappers
-  // Do it like this instead of checking instanceof to handle the edge case
-  // of deliberately setting a weakref as a value
-  #weakRefs = new WeakSet()
-
   // When generating with new iterable, use the modified set
   // so that we generate weakrefs
   // TODO: Allow non object values? Just act as a normal map?
@@ -33,15 +28,13 @@ class WeakRefMap extends Map {
   // register the new one for finalization
   set (key, value) {
     const oldValue = super.get(key)
-    if (this.#weakRefs.has(oldValue)) {
+    if (oldValue instanceof WeakRef) {
       this.#registry.unregister(oldValue)
-      this.#weakRefs.delete(oldValue)
     }
     // If its an object wrap it in a weakref
     if (typeof value === 'object' && value !== null) {
       const ref = new WeakRef(value)
       this.#registry.register(value, key, ref)
-      this.#weakRefs.add(ref)
       return super.set(key, ref)
     }
     // If its not an object just set it directly 
@@ -54,14 +47,14 @@ class WeakRefMap extends Map {
     let value = super.get(key);
     // If its a weakRef then unwrap it first
     // No need to check for GCd stuff because its meant to be undefined anyway
-    if (this.#weakRefs.has(value)) value = super.get(key)?.deref()
+    if (value instanceof WeakRef) value = super.get(key)?.deref()
     return value
   }
 
   has (key) {
     let value = super.get(key);
     // If its a weakRef then unwrap it first
-    if (this.#weakRefs.has(value)) {
+    if (value instanceof WeakRef) {
       value = super.get(key)?.deref()
       // If its been GC'd then return false
       if (typeof value === 'undefined') return false
@@ -76,9 +69,8 @@ class WeakRefMap extends Map {
     const value = super.get(key)
     // If there is a ref then unregister first to avoid
     // finalization deleting any new values later
-    if (this.#weakRefs.has(value)) {
+    if (value instanceof WeakRef) {
       this.#registry.unregister(value)
-      this.#weakRefs.delete(value)
       super.delete(key)
       // Only return a successful delete if ref was still live
       if (typeof value.deref() === 'undefined') return false
@@ -96,7 +88,6 @@ class WeakRefMap extends Map {
     this.#registry = new FinalizationRegistry(key => {
       super.delete(key)
     })
-    this.#weakRefs = new WeakSet()
     return super.clear()
   }
 
@@ -108,7 +99,7 @@ class WeakRefMap extends Map {
   // Iterates but only yields live references
   * [Symbol.iterator] () {
     for (let [key, value] of super[Symbol.iterator]()) {
-      if (this.#weakRefs.has(value)) {
+      if (value instanceof WeakRef) {
         value = value.deref()
         if (typeof value !== 'undefined') yield [key, value]
       } else {

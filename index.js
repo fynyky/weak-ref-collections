@@ -1,3 +1,4 @@
+// Nonsense comment to test
 // In Node.js this is packaged into a module
 // In the browser exports are bound directly to the window namespace
 const global =

@@ -1,6 +1,6 @@
 {
   "name": "weak-ref-collections",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Iterable WeakMaps and WeakSets. Provides WeakRefMap and WeakRefSet which store values using WeakRefs and clean themselves up when garbage collected.",
   "main": "index.js",
   "scripts": {

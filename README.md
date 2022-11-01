@@ -1,6 +1,12 @@
 # Weak Ref Collections
 Iterable WeakMaps and WeakSets. Provides WeakRefMap and WeakRefSet which store object values using WeakRefs and clean themselves up when garbage collected. Supports both objects and primitives simultaneously. Behaves like normal Map and Set for primitives.
 
+## Installation
+```bash
+npm install weak-ref-collections
+```
+
+## Usage
 Unlike WeakMap which stores keys weakly, WeakRefMap stores keys strongly but stores values using WeakRefs. Is fully iterable. Works just like a normal Map object but holds its values weakly and cleans itself up when its values are garbage collected. Follows the [Map API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
 
 ```javascript

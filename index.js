@@ -1,8 +1,3 @@
-// In Node.js this is packaged into a module
-// In the browser exports are bound directly to the window namespace
-const global =
-  typeof exports !== 'undefined' && exports !== null ? exports : this
-
 class WeakRefMap extends Map {
   // Delete the corresponding key when object is collected
   // Need to manually deregister if deleting or setting new value
@@ -230,5 +225,7 @@ class WeakRefSet extends Set {
   * values () { yield * this }
 }
 
-global.WeakRefMap = WeakRefMap
-global.WeakRefSet = WeakRefSet
+export {
+  WeakRefMap,
+  WeakRefSet
+}

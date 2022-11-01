@@ -30,5 +30,6 @@
   "bugs": {
     "url": "https://github.com/fynyky/weak-ref-collections/issues"
   },
-  "homepage": "https://github.com/fynyky/weak-ref-collections#readme"
+  "homepage": "https://github.com/fynyky/weak-ref-collections#readme",
+  "type": "module"
 }

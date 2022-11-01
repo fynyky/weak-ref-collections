@@ -1,6 +1,6 @@
 /* eslint-env mocha */
-const assert = require('assert')
-const { WeakRefMap, WeakRefSet } = require('./index.js')
+import assert from 'assert'
+import { WeakRefMap, WeakRefSet } from './index.js'
 
 describe('WeakRefMap', () => {
   let weakRefMap, regularMap

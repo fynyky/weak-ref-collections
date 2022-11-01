@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+// Testing some dummy comments
 const assert = require('assert')
 const { WeakRefMap, WeakRefSet } = require('./index.js')
 
